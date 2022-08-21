@@ -1,8 +1,6 @@
 package com.yeahbutstill.orderservice.kafka;
 
 import com.yeahbutstill.basedomains.dto.OrderEvent;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -10,16 +8,21 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@Transactional
 @Slf4j
 public class OrderProducer {
 
-    private NewTopic newTopic;
+    private final NewTopic newTopic;
 
-    private KafkaTemplate<String, OrderEvent> stringOrderEventKafkaTemplate;
+    private final KafkaTemplate<String, OrderEvent> stringOrderEventKafkaTemplate;
+
+    public OrderProducer(NewTopic newTopic, KafkaTemplate<String, OrderEvent> stringOrderEventKafkaTemplate) {
+        this.newTopic = newTopic;
+        this.stringOrderEventKafkaTemplate = stringOrderEventKafkaTemplate;
+    }
 
     public void sendMessage(OrderEvent orderEvent) {
 
